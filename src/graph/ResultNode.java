@@ -38,6 +38,4 @@ public class ResultNode {
 		if(parent != null) parent.extractPath(path);
 		path.add(graphNode.name);
 	}
-
-
 }
