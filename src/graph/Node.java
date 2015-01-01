@@ -20,8 +20,8 @@ public class Node {
 		return false;
 	}
 
-	public void connectTo(Edge edge) {
-		edges.add(edge);
+	public void connectTo(Node n, double cost) {
+		edges.add(new Edge(n, cost));
 	}
 
 }

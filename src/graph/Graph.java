@@ -13,8 +13,8 @@ import java.util.StringTokenizer;
 
 public class Graph {
 
-	private Map<String, Node> graph; 
-	private List<Node> graphList;
+	private Map<String, Node> graph;
+//	private List<Node> graphList;
 
 	public Graph() {
 		graph = new HashMap<String, Node>();
@@ -24,6 +24,11 @@ public class Graph {
 		return graph.isEmpty();
 	}
 
+	public Edge getEdge(String startNode, String endNode){
+		for(Edge e : graph.get(startNode).edges) if( e.target.name.equals(endNode)) return e;
+		return null;
+	}
+	
 	public int amountOfNodes() {
 		return graph.size();
 	}
@@ -34,8 +39,9 @@ public class Graph {
 
 	public Node getNode(String name) {
 		Node v = graph.get(name);
-		if (v == null) {
-			v = newNode(name);
+		if(v == null){
+			newNode(name);
+			v = graph.get(name);
 		}
 		return v;
 	}
@@ -49,7 +55,7 @@ public class Graph {
 	public void newEdge(String source, String dest, double cost) {
 		Node v = getNode(source);
 		Node w = getNode(dest);
-		if(!v.isConnectedWith(w)) v.connectTo(new Edge(w, cost));
+		if(!v.isConnectedWith(w)) v.connectTo(w, cost);
 	}
 	
 	@Override
