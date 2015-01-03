@@ -34,7 +34,7 @@ public class GraphComponent extends JPanel {
 		counterX = 0;
 		counterY = 30;
 		for(Node n : g.getAllNodes()){
-			NodeComponent nc = new NodeComponent(n);
+			NodeComponent nc = new NodeComponent(n, this);
 			addNode(nc);
 		}
 		for(NodeComponent n : nodes){
