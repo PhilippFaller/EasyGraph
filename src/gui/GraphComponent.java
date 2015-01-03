@@ -51,9 +51,11 @@ public class GraphComponent extends JPanel {
 	}
 	
 	public void sortNodes(){
+		int i = 0;
 		for(NodeComponent n : nodes){
-			if(counterX + 30 + n.getWidth() > this.getWidth() - 30){
+			if(counterX + 30 + n.getWidth() > this.getWidth() - 30 || i++ > 5){
 				counterX = 0;
+				i = 0;
 				counterY += 30;	
 			}
 			n.setY(counterY);
@@ -66,14 +68,14 @@ public class GraphComponent extends JPanel {
 	public void update(long deltaT){
 		for(NodeComponent n1 : nodes){
 			for(NodeComponent n2 : nodes) if(n1 != n2){
-				n1.applyForceTo(n2);
+				n1.applyForceFrom(n2);
 //				System.out.println(n1.getNode().name + " -> " + n2.getNode().name);
 			}
 		}
 		for(NodeComponent n : nodes){
 			n.update(deltaT);
 		}
-		repaint();
+//		repaint();
 	}
 	
 	@Override

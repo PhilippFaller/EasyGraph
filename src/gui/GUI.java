@@ -15,9 +15,17 @@ public class GUI extends JFrame {
 		super(name);
 		setSize(500,500);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		g = new GraphComponent(Graph.loadGraph("rumaenien.graph"));
+		g = new GraphComponent(Graph.loadGraph("test.graph"));
 		this.getContentPane().add(g);
 		setVisible(true);
+	}
+	
+	//TODO überarbeiten sortNodes()
+	public void skipLoop(){
+		g.sortNodes();
+		for(int i = 0; i < 180000 ; i ++){
+			g.update(17);
+		}
 	}
 	
 	public void startLoop(){
@@ -30,6 +38,7 @@ public class GUI extends JFrame {
 					if(deltaT >= 17){
 						t1 = System.currentTimeMillis();
 						g.update(deltaT);
+						repaint();
 					}
 				}
 			}
@@ -42,6 +51,7 @@ public class GUI extends JFrame {
 	 */
 	public static void main(String[] args) {
 		GUI g = new GUI("Graph");
+//		g.skipLoop();
 		g.startLoop();
 	}
 

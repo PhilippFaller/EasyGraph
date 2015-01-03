@@ -40,25 +40,46 @@ public class NodeComponent {
 //			System.out.println(velocity + " v " + n.name);
 //			getVelocity().add(getAcceleration().mulV(0.01 * deltaT));
 //			getPosition().add(getVelocity().mulV(0.01 * deltaT));
+		applyRepelFrom(new GVector(this.getX(), 0));
+		applyRepelFrom(new GVector(this.getX(), parent.getWidth()));
+		applyRepelFrom(new GVector(0, this.getY()));
+		applyRepelFrom(new GVector(parent.getHeight(), this.getY()));
 			getAcceleration().add(getAcceleration().mulV(-0.001));
-			getPosition().add(getAcceleration().mulV(1 * deltaT));
+			getPosition().add(getAcceleration().mulV(/*1 * */ deltaT));
 //		}
 //		System.out.println(acceleration + " a");
 //		System.out.println(velocity + " v");
 //		System.out.println(pos + " pos");
 	}
 	
-	public void applyForceTo(NodeComponent n){
-		GVector diff = this.getPosition().subV(n.getPosition());
+	public void applyForceFrom(NodeComponent n){
+//		if(n.getNode().isConnectedWith(getNode())) applyAttractionFrom(n.getPosition());  
+		/*else*/ applyRepelFrom(n.getPosition());
+	}
+	
+	private void applyRepelFrom(GVector position){
+		GVector diff = position.subV(this.getPosition());
 		diff.div(Math.pow(diff.length(), 3));
 		/*if(!this.getNode().isConnectedWith(n.getNode()))*/diff.mul(-1);
-		n.getAcceleration().add(diff);
+		this.getAcceleration().add(diff);
 //		System.out.println(this.getPosition() + " thisPos");
 //		System.out.println(n.getPosition() + " nPos");
 //		System.out.println(this.getPosition().subV(n.getPosition()) + this.getNode().name + " -> " + n.getNode().name);
 //		System.out.println(diff);
 //		System.out.println(this.getAcceleration().getX() + " this x");
 //		System.out.println(n.getAcceleration().getX() + " n x");
+		
+	}
+	
+	private void applyAttractionFrom(GVector position){
+		GVector diff = position.subV(this.getPosition());
+//		diff.div(Math.pow(diff.length(), 2));
+		diff.mul(-0.0001);
+		diff.setX(Math.pow(diff.getX(), 4));
+		diff.setY(Math.pow(diff.getY(), 4));
+		
+		this.getAcceleration().add(diff);
+		
 	}
 	
 	private boolean isOutOfBorderX(){
@@ -80,6 +101,7 @@ public class NodeComponent {
 	}
 
 	public void paintNode(Graphics g){
+//		System.out.println("repaint()");
 		g.setColor(Color.BLUE);
 		g.fillOval((int)pos.getX() - width/2,(int) pos.getY() - height/2, width, height);
 		g.setColor(Color.BLACK);
