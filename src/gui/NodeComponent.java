@@ -70,6 +70,7 @@ public class NodeComponent {
 	}
 
 	private void applyRepelFrom(GVector position){
+//		System.out.println("update");
 		GVector diff = position.subV(this.getPosition());
 //		System.out.println(diff + " abstand");
 		diff.div(Math.pow(diff.length(), 3));
@@ -112,7 +113,7 @@ public class NodeComponent {
 	}
 
 	public void paintNode(Graphics g){
-		//		System.out.println("repaint()");
+				System.out.println("repaint()");
 		g.setColor(Color.BLUE);
 		g.fillOval((int)pos.getX() - width/2,(int) pos.getY() - height/2, width, height);
 		g.setColor(Color.BLACK);

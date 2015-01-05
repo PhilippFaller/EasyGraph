@@ -69,7 +69,8 @@ public class GraphComponent extends JPanel {
 		}
 	}
 	
-	public void update(long deltaT){
+	public void update(long deltaT){System.out.println("update called");
+		
 		for(NodeComponent n1 : nodes){
 			for(NodeComponent n2 : nodes) if(n1 != n2){
 				n1.applyForceFrom(n2);

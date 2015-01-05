@@ -72,24 +72,5 @@ public class Graph {
 	public void printGraph(){
 		System.out.println(toString());
 	}
-
-	public static Graph loadGraph(String fileName) {
-		Graph g = new Graph();
-		try {
-			BufferedReader f = new BufferedReader(new FileReader(fileName));
-			String line;
-			while ((line = f.readLine()) != null) {
-				StringTokenizer st = new StringTokenizer(line);
-				String source = st.nextToken();
-				String dest = st.nextToken();
-				double cost = Double.parseDouble(st.nextToken());
-				g.newEdge(source, dest, cost);
-			}
-			f.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return g;
-	}
 }
 
