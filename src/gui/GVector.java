@@ -59,6 +59,15 @@ public class GVector {
 		return new GVector( this.x / s, this.y / s );
 	}
 	
+	public void pow( double s ) {
+		setX( Math.pow( x, s ) );
+		setY( Math.pow( y, s ) );
+	}
+	
+	public GVector powV( double s ) {
+		return new GVector( Math.pow( this.x, s ), Math.pow( this.y, s ) );
+	}
+	
 	public double getDotProduct(GVector v) {
 		return (this.x * v.x + this.y * v.y);
 	}

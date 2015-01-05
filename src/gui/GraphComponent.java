@@ -51,18 +51,22 @@ public class GraphComponent extends JPanel {
 	}
 	
 	public void sortNodes(){
-		int i = 0;
+//		int i = 0;
+//		for(NodeComponent n : nodes){
+//			if(counterX + 30 + n.getWidth() > this.getWidth() - 30 || i++ > 5){
+//				counterX = 0;
+//				i = 0;
+//				counterY += 30;	
+//			}
+//			n.setY(counterY);
+//			n.setX(counterX += 30);
+//		}
+//		counterX = 0;
+//		counterY = 30;
 		for(NodeComponent n : nodes){
-			if(counterX + 30 + n.getWidth() > this.getWidth() - 30 || i++ > 5){
-				counterX = 0;
-				i = 0;
-				counterY += 30;	
-			}
-			n.setY(counterY);
-			n.setX(counterX += 30);
+			n.setX(Math.random() * getWidth());
+			n.setY(Math.random() * getHeight());
 		}
-		counterX = 0;
-		counterY = 30;
 	}
 	
 	public void update(long deltaT){
@@ -73,6 +77,7 @@ public class GraphComponent extends JPanel {
 			}
 		}
 		for(NodeComponent n : nodes){
+//			System.out.println(n.getNode().name + " " + n.getPosition());
 			n.update(deltaT);
 		}
 //		repaint();
