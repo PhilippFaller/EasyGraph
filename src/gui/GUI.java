@@ -23,31 +23,18 @@ public class GUI extends JFrame {
 	
 	private boolean update;
 	private GraphComponent g;
-	private Thread repaintThread;
 	private int millisBetweenRepaint;
 	
 	public GUI(String name){
 		super(name);
-		setSize(800,800);
+		setSize(400,400);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		try{g = new GraphComponent(GraphIO.loadGraph("rumaenien.graph"));
-		this.getContentPane().add(g);
-		}catch(Exception e){e.printStackTrace();}
-//		g = null;
+//		try{g = new GraphComponent(GraphIO.loadGraph("rumaenien.graph"));
+//		this.getContentPane().add(g);
+//		}catch(Exception e){e.printStackTrace();}
+		g = null;
 		update = false;
 		millisBetweenRepaint = 17;
-		repaintThread =  new Thread(){
-			public void run(){
-				long t0 = System.currentTimeMillis();
-				while(true){
-					long deltaT = System.currentTimeMillis() - t0;
-					if(deltaT >= millisBetweenRepaint){
-						t0 = System.currentTimeMillis();
-						repaint();
-					}
-				}
-			}
-		};
 		addKeyListener(new KeyListener() {
 			
 			@Override
@@ -75,18 +62,34 @@ public class GUI extends JFrame {
 	
 	
 	public void startLoops(){
-		repaintThread.start();
-		g.sortNodes();
-		while(true)	if(update) g.update(0);
+		long t0 = System.currentTimeMillis();
+		while(true){
+			if(update) g.update();
+			long deltaT = System.currentTimeMillis() - t0;
+			if(deltaT >= millisBetweenRepaint){
+				t0 = System.currentTimeMillis();
+				repaint();
+			}
+		}
+//		g.sortNodes();
 	}
+//	
+//	public synchronized void setGraphComponent(GraphComponent g){
+//		this.g = g;
+//	}
+//	
+//	public synchronized GraphComponent getGraphComponent(){
+//		return g;
+//	}
 	
-	private synchronized void setGraphComponent(GraphComponent g){
-		this.g = g;
-	}
-	
-	private synchronized GraphComponent getGraphComponent(){
-		return g;
-	}
+//	public synchronized void setUpdateEnabled(boolean b){
+//		update = b;
+//	}
+//	
+//	
+//	public synchronized boolean isUpdateEnabled(){
+//		return update;
+//	}
 	
 	private void loadGraph(){
 //		int result = fileChooser.showDialog(GUI.this, "Load");
@@ -94,13 +97,10 @@ public class GUI extends JFrame {
 			try{
 //				g = new GraphComponent(GraphIO.loadGraph(fileChooser.getSelectedFile().getAbsolutePath()));
 				g = new GraphComponent(GraphIO.loadGraph("test.graph"));
-				System.out.println("Graph loaded");
 				this.getContentPane().add(g);
-				System.out.println("Graph added");
+				this.revalidate();
 				g.sortNodes();
-				System.out.println("Graph sorted");
 				update = true;
-				System.out.println("update true");
 			}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(this, "Fehler beim lesen der Datei \""

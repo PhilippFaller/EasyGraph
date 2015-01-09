@@ -18,7 +18,8 @@ public class EdgeComponent {
 	}
 
 	public void paintEdge(Graphics g){
-		g.drawLine((int)start.getX(),(int) start.getY(),(int) end.getX(),(int) end.getY());
+		g.drawLine((int)start.getPosition().getX(),(int) start.getPosition().getY(),
+				(int) end.getPosition().getX(),(int) end.getPosition().getY());
 	}
 
 	public NodeComponent getStart() {

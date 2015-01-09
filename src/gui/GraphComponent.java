@@ -18,8 +18,8 @@ import graph.Node;
 public class GraphComponent extends JPanel {
 	
 	private Graph g;
-	private List<NodeComponent> nodes;
-	private Map<String, NodeComponent> nodesMap;
+	private List<PhysikNode> nodes;
+	private Map<String, PhysikNode> nodesMap;
 //	private List<EdgeComponent> edges;
 	private int counterX;
 	private int counterY;
@@ -34,7 +34,7 @@ public class GraphComponent extends JPanel {
 		counterX = 0;
 		counterY = 30;
 		for(Node n : g.getAllNodes()){
-			NodeComponent nc = new NodeComponent(n, this);
+			PhysikNode nc = new PhysikNode(n);
 			addNode(nc);
 		}
 		for(NodeComponent n : nodes){
@@ -45,7 +45,8 @@ public class GraphComponent extends JPanel {
 //		repaint();
 	}
 	
-	private void addNode(NodeComponent n){
+	private void addNode(PhysikNode n){
+		n.setParent(this);
 		nodes.add(n);
 		nodesMap.put(n.getNode().name, n);
 	}
@@ -64,22 +65,21 @@ public class GraphComponent extends JPanel {
 //		counterX = 0;
 //		counterY = 30;
 		for(NodeComponent n : nodes){
-			n.setX(Math.random() * getWidth());
-			n.setY(Math.random() * getHeight());
+			n.getPosition().setX(Math.random() * getWidth());
+			n.getPosition().setY(Math.random() * getHeight());
 		}
 	}
 	
-	public void update(long deltaT){System.out.println("update called");
-		
-		for(NodeComponent n1 : nodes){
-			for(NodeComponent n2 : nodes) if(n1 != n2){
+	public void update(){		
+		for(PhysikNode n1 : nodes){
+			for(PhysikNode n2 : nodes) if(n1 != n2){
 				n1.applyForceFrom(n2);
 //				System.out.println(n1.getNode().name + " -> " + n2.getNode().name);
 			}
 		}
 		for(NodeComponent n : nodes){
 //			System.out.println(n.getNode().name + " " + n.getPosition());
-			n.update(deltaT);
+			n.update();
 		}
 //		repaint();
 	}
@@ -87,7 +87,6 @@ public class GraphComponent extends JPanel {
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-//		sortNodes();
 		for(NodeComponent n : nodes){
 			n.paintEdges(g);
 		}
