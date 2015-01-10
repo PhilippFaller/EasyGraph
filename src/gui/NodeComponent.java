@@ -18,17 +18,16 @@ public class NodeComponent {
 	private JComponent parent;
 	private boolean dragged;
 
+
+	public NodeComponent(Node n){
+		this(n, 0, 0);
+	}
 	
-	//TODO wozu brauch ich den???
-	public NodeComponent(Node n, int x, int y, int width, int height){
+	public NodeComponent(Node n, double x, double y){
 		this.n = n;
 		pos = new GVector(x, y);
 		edges = new ArrayList<>();
 		dragged = false;
-	}
-
-	public NodeComponent(Node n){
-		this(n, 0, 0, diameter, diameter);
 	}
 
 	public void update(){

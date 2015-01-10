@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.NoSuchElementException;
 
 import graph.Graph;
+import graph.Node;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -41,10 +42,9 @@ public class GUI extends JFrame {
 			
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if(e.getKeyChar() == CTRL_L){
-					loadGraph();
-				}
-				else if (e.getKeyChar() == ' ') update = !update;
+				if(e.getKeyChar() == CTRL_L) loadGraph();
+				else if(e.getKeyChar() == ' ') update = !update;
+				else if(e.getKeyChar() == 'n') 	addNode(); 
 			}
 			
 			@Override
@@ -127,6 +127,13 @@ public class GUI extends JFrame {
 //	public synchronized boolean isUpdateEnabled(){
 //		return update;
 //	}
+	
+	private void addNode(){
+		String name = JOptionPane.showInputDialog(this, "Geben sie den Name des neuen Knoten ein.", "Neuer Knoten");
+		if(g != null){
+			g.addNode(new PhysikNode(new Node(name), Math.random() * getWidth(), Math.random() * getHeight()));
+		}
+	}
 	
 	private void loadGraph(){
 //		int result = fileChooser.showDialog(GUI.this, "Load");

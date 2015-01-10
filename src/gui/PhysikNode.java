@@ -6,14 +6,14 @@ public class PhysikNode extends NodeComponent {
 
 	private GVector velocity, acceleration;
 
-	public PhysikNode(Node n, int x, int y, int width, int height) {
-		super(n, x, y, width, height);
+	public PhysikNode(Node n) {
+		super(n);
 		velocity = new GVector();
 		acceleration = new GVector();
 	}
-
-	public PhysikNode(Node n) {
-		super(n);
+	
+	public PhysikNode(Node n, double x, double y){
+		super(n, x, y);
 		velocity = new GVector();
 		acceleration = new GVector();
 	}
@@ -21,8 +21,10 @@ public class PhysikNode extends NodeComponent {
 	@Override
 	public void update(){
 		if(isDragged()){
+			try{
 			getPosition().setX(getParent().getMousePosition().getX());
 			getPosition().setY(getParent().getMousePosition().getY());
+			}catch(NullPointerException e){};
 			setAcceleration(new GVector());
 		} else {
 			if(isOutOfBorderX()) turnAroundX();

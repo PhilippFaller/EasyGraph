@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import graph.Edge;
@@ -29,8 +32,8 @@ public class GraphComponent extends JPanel {
 	public GraphComponent(Graph g){
 		super();
 		this.g = g;
-		nodes = new ArrayList<>();
-		nodesMap = new HashMap<>();
+		nodes = new CopyOnWriteArrayList<>();
+		nodesMap = new ConcurrentHashMap<>();
 //		edges = new ArrayList<>();
 //		setPreferredSize(new Dimension(, Integer.MAX_VALUE));
 		counterX = 0;
@@ -48,9 +51,14 @@ public class GraphComponent extends JPanel {
 	}
 	
 	public void addNode(PhysikNode n){
-		n.setParent(this);
-		nodes.add(n);
-		nodesMap.put(n.getNode().name, n);
+		if(nodesMap.containsKey(n.getNode().name)){
+			JOptionPane.showMessageDialog(this, "Es existiert bereits ein Knoten mit diesem Namen",
+					"Fehler", JOptionPane.ERROR_MESSAGE);
+		}else{
+			n.setParent(this);
+			nodes.add(n);
+			nodesMap.put(n.getNode().name, n);
+		}
 	}
 	
 	public NodeComponent getNodeAt(double x, double y){
