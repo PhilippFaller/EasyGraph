@@ -10,7 +10,7 @@ import graph.Node;
 
 public class NodeComponent {
 	
-	private static int diameter = 20;
+	private static int diameter = 40;
 
 	private Node n;
 	private GVector pos;
@@ -36,10 +36,16 @@ public class NodeComponent {
 	}
 
 	public void paintNode(Graphics g){
-		g.setColor(Color.BLUE);
-		g.fillOval((int)pos.getX() - diameter/2,(int) pos.getY() - diameter/2, diameter, diameter);
+		
 		g.setColor(Color.BLACK);
-		g.drawOval((int) pos.getX() - diameter/2, (int) pos.getY() - diameter/2, diameter, diameter);
+		g.fillOval((int) pos.getX() - diameter/2, (int) pos.getY() - diameter/2, diameter, diameter);
+		g.setColor(Color.BLUE);
+		g.fillOval((int)pos.getX() - diameter/2 + diameter/10,(int) pos.getY() - diameter/2 + diameter/10,
+				diameter - diameter/5, diameter - diameter/5);
+		g.setColor(Color.BLACK);
+		if(n.name.length() > 3)
+			g.drawString(n.name.substring(0, 3),(int) pos.getX() - diameter / 3,(int) pos.getY());
+		else g.drawString(n.name,(int) pos.getX() - diameter / 3,(int) pos.getY());
 	}
 
 	public void paintEdges(Graphics g){
