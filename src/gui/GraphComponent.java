@@ -45,10 +45,17 @@ public class GraphComponent extends JPanel {
 //		repaint();
 	}
 	
-	private void addNode(PhysikNode n){
+	public void addNode(PhysikNode n){
 		n.setParent(this);
 		nodes.add(n);
 		nodesMap.put(n.getNode().name, n);
+	}
+	
+	public NodeComponent getNodeAt(double x, double y){
+		for(NodeComponent n : nodes){
+			if(n.isAt(x, y)) return n;
+		}
+		return null;
 	}
 	
 	public void sortNodes(){

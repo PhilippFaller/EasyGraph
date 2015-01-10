@@ -20,17 +20,24 @@ public class PhysikNode extends NodeComponent {
 
 	@Override
 	public void update(){
-		if(isOutOfBorderX()) turnAroundX();
-		if(isOutOfBorderY()) turnAroundY();
+		if(isDragged()){
+			getPosition().setX(getParent().getMousePosition().getX());
+			getPosition().setY(getParent().getMousePosition().getY());
+			setAcceleration(new GVector());
+		} else {
+			if(isOutOfBorderX()) turnAroundX();
+			if(isOutOfBorderY()) turnAroundY();
 
-		applyRepelFrom(new GVector(this.getX(), 0));
-		applyRepelFrom(new GVector(this.getX(), getParent().getHeight()));
-		applyRepelFrom(new GVector(0, this.getY()));
-		applyRepelFrom(new GVector(getParent().getWidth(), this.getY()));
-		getAcceleration().add(getVelocity().mulV(-0.25));
-		getVelocity().add(getAcceleration());
-		getPosition().add(getVelocity());
-		setAcceleration(new GVector());
+			applyRepelFrom(new GVector(this.getX(), 0));
+			applyRepelFrom(new GVector(this.getX(), getParent().getHeight()));
+			applyRepelFrom(new GVector(0, this.getY()));
+			applyRepelFrom(new GVector(getParent().getWidth(), this.getY()));
+			getAcceleration().add(getVelocity().mulV(-0.25));
+			getVelocity().add(getAcceleration());
+			getPosition().add(getVelocity());
+			setAcceleration(new GVector());
+
+		}
 	}
 
 	public void applyForceFrom(NodeComponent n){
@@ -53,13 +60,13 @@ public class PhysikNode extends NodeComponent {
 		diff.div(diff.length() * 15);
 		this.getAcceleration().add(diff);
 	}
-	
+
 	private boolean isOutOfBorderX(){
-		return getPosition().getX() + getWidth()/2 > getParent().getWidth() || getPosition().getX() - getWidth()/2 < 0;
+		return getPosition().getX() + getDiameter()/2 > getParent().getWidth() || getPosition().getX() - getDiameter()/2 < 0;
 	}
 
 	private boolean isOutOfBorderY(){
-		return getPosition().getY() + getHeight()/2 > getParent().getHeight() || getPosition().getY() - getHeight()/2 < 0;
+		return getPosition().getY() + getDiameter()/2 > getParent().getHeight() || getPosition().getY() - getDiameter()/2 < 0;
 	}
 
 	private void turnAroundX(){
@@ -70,7 +77,7 @@ public class PhysikNode extends NodeComponent {
 		getAcceleration().setY(getAcceleration().getY() * -1);
 		getVelocity().setY(getVelocity().getY() * -1);
 	}
-	
+
 	public GVector getVelocity() {
 		return velocity;
 	}

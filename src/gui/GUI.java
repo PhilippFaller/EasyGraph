@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
@@ -42,6 +44,7 @@ public class GUI extends JFrame {
 				if(e.getKeyChar() == CTRL_L){
 					loadGraph();
 				}
+				else if (e.getKeyChar() == ' ') update = !update;
 			}
 			
 			@Override
@@ -55,13 +58,47 @@ public class GUI extends JFrame {
 				
 			}
 		});
+		getContentPane().addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				NodeComponent n = null;
+				if(g != null) n = g.getNodeAt(e.getX(), e.getY());
+				if(n != null) n.setDragged(false);
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				NodeComponent n = null;
+				if(g != null) n = g.getNodeAt(e.getX(), e.getY());
+				if(n != null) n.setDragged(true);
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		setVisible(true);
 	}
 	
 	//TODO überarbeiten sortNodes()
 	
 	
-	public void startLoops(){
+	public void startLoop(){
 		long t0 = System.currentTimeMillis();
 		while(true){
 			if(update) g.update();
@@ -114,7 +151,7 @@ public class GUI extends JFrame {
 	 */
 	public static void main(String[] args) {
 		GUI g = new GUI("Graph");
-		g.startLoops();
+		g.startLoop();
 	}
 
 }
