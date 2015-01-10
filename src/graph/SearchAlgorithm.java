@@ -5,85 +5,82 @@ import graph.*;
 import java.util.*;
 
 public class SearchAlgorithm {
+	
 	Graph origGraph;
-	private ArrayList<ResultNode> openList = new ArrayList<>();
-	private Node target;
+	private ArrayList<Suchknoten> openList = new ArrayList<>();
+	private Node zielKnoten;
 	private ArrayList<String> path = new ArrayList<>();
 
 	public SearchAlgorithm(Graph g) {
 		origGraph = g;
 	}
 
-	public void search(Node start, Node target) {
-		setTargetNode(target);
-		// Aus start einen Suchknoten machen und zur Open List hinzufuegen
-		openList.add(new ResultNode(start, null));
-		
-		// Solange Knoten aus der OL entfernen und expandieren, bis das Ziel
-		// erreicht ist
-		ResultNode n;
-		do{
-			n = removeNextFromOpenList();
-			expand(n);			
-		}while(!isTarget(n));
-		
-		// Aus dem letzten Suchknoten den Pfad extrahieren und in path
-		// speichern.
-		n.extractPath(path);
-		
+	public void search(Node start, Node ziel) {
+		Suchknoten s = new Suchknoten(start, null);
+		setZielknoten(ziel);
+		addToOpenList(s);
+		while (!openList.isEmpty()) {
+			Suchknoten skn = removeNextFromOpenList();
+			if (istZielknoten(skn)) {
+				clearPath();
+				extractPathFromSearchNodes(skn);
+				return;
+			}
+			expand(skn);
+		}
 	}
 
-	public void setTargetNode(Node target) {
-		this.target =  target;
+	public void setZielknoten(Node ziel) {
+		zielKnoten = ziel;
 	}
 
 	/**
-	 * @param n
+	 * @param skn
 	 * @return true, wenn skn der Zielknoten ist, sonst false
 	 */
-	public boolean isTarget(ResultNode n) {
-		if(n.graphNode.name.equals(target.name)) return true;
-		return false;
+	public boolean istZielknoten(Suchknoten skn) {
+		return skn.getGraphKnoten().equals(zielKnoten);
 	}
 
-	public void expand(ResultNode n) {
-		for(Edge e : n.graphNode.edges)
-			openList.add(new ResultNode(e.target, n));
-		// Alle Kanten des Graphknoten von skn durchlaufen und deren Zielknoten
-		// als Suchknoten in die OL einfuegen.
+	public void expand(Suchknoten skn) {
+		for (Edge k : skn.graphKnoten.edges) {
+			Node ziel = k.target;
+			Suchknoten sknZiel = new Suchknoten(ziel, skn);
+			addToOpenList(sknZiel);
+		}
 	}
 
 	public void clearPath() {
-		path = new ArrayList<>();
+		path.clear();
 	}
 
-	public void extractPathFromResultNodes(ResultNode n) {
-		n.extractPath(path);
-		// Gerne rekursiv... :-) 
+	public void extractPathFromSearchNodes(Suchknoten skn) {
+		if (skn.parent != null) {
+			extractPathFromSearchNodes(skn.parent);
+		}
+		path.add(skn.graphKnoten.name);
 	}
 
-	public ResultNode removeNextFromOpenList() {
-		ResultNode k = openList.get(0);
-		openList.remove(0);
-		return k;
+	public Suchknoten removeNextFromOpenList() {
+		Suchknoten skn = openList.remove(0);
+		return skn;
 	}
 
 	public List<String> getPath() {
 		return path;
 	}
 
-	public void addToOpenList(ResultNode skn) {
+	public void addToOpenList(Suchknoten skn) {
 		openList.add(skn);
 	}
 
 	public Node getTarget() {
-		return target;
+		return zielKnoten;
 	}
 
-	public ArrayList<ResultNode> getOpenList() {
+	public ArrayList<Suchknoten> getOpenList() {
 		return openList;
 	}
-
 }
 
 

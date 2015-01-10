@@ -10,6 +10,14 @@ import graph.Node;
 
 public class NodeComponent {
 	
+	public enum State{
+		NORMAL,
+		START,
+		TARGET,
+		WAYPOINT
+		
+	}
+	
 	private static int diameter = 40;
 
 	private Node n;
@@ -17,7 +25,8 @@ public class NodeComponent {
 	private List<EdgeComponent> edges;
 	private JComponent parent;
 	private boolean dragged;
-
+	private boolean selected;
+	private  State state;
 
 	public NodeComponent(Node n){
 		this(n, 0, 0);
@@ -28,6 +37,7 @@ public class NodeComponent {
 		pos = new GVector(x, y);
 		edges = new ArrayList<>();
 		dragged = false;
+		state = State.NORMAL;
 	}
 
 	public void update(){
@@ -38,7 +48,14 @@ public class NodeComponent {
 		
 		g.setColor(Color.BLACK);
 		g.fillOval((int) pos.getX() - diameter/2, (int) pos.getY() - diameter/2, diameter, diameter);
-		g.setColor(Color.BLUE);
+		switch(state){
+		case NORMAL: g.setColor(Color.BLUE); break;
+		case START: g.setColor(Color.GREEN); break;
+		case TARGET: g.setColor(Color.RED); break;
+		case WAYPOINT: g.setColor(Color.ORANGE); break;
+		default: break;
+		}
+		
 		g.fillOval((int)pos.getX() - diameter/2 + diameter/10,(int) pos.getY() - diameter/2 + diameter/10,
 				diameter - diameter/5, diameter - diameter/5);
 		g.setColor(Color.BLACK);
@@ -101,11 +118,27 @@ public class NodeComponent {
 		this.dragged = dragged;
 	}
 
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
 	public static int getDiameter() {
 		return diameter;
 	}
 
 	public static void setDiameter(int diameter) {
 		NodeComponent.diameter = diameter;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
 	}
 }

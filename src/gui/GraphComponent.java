@@ -19,25 +19,20 @@ import javax.swing.JPanel;
 import graph.Edge;
 import graph.Graph;
 import graph.Node;
+import graph.SearchAlgorithm;
+import gui.NodeComponent.State;
 
-public class GraphComponent extends JPanel {
+class GraphComponent extends JPanel {
 	
 	private Graph g;
 	private List<PhysikNode> nodes;
 	private Map<String, PhysikNode> nodesMap;
-//	private List<EdgeComponent> edges;
-	private int counterX;
-	private int counterY;
 	
 	public GraphComponent(Graph g){
 		super();
 		this.g = g;
 		nodes = new CopyOnWriteArrayList<>();
 		nodesMap = new ConcurrentHashMap<>();
-//		edges = new ArrayList<>();
-//		setPreferredSize(new Dimension(, Integer.MAX_VALUE));
-		counterX = 0;
-		counterY = 30;
 		for(Node n : g.getAllNodes()){
 			PhysikNode nc = new PhysikNode(n);
 			addNode(nc);
@@ -47,7 +42,10 @@ public class GraphComponent extends JPanel {
 				n.connectTo(nodesMap.get(e.target.name), e.costs);
 			}
 		}
-//		repaint();
+	}
+	
+	public GraphComponent(){
+		this(new Graph());
 	}
 	
 	public void addNode(PhysikNode n){
@@ -61,6 +59,18 @@ public class GraphComponent extends JPanel {
 		}
 	}
 	
+	public void addNewNode(PhysikNode n){
+		if(nodesMap.containsKey(n.getNode().name)){
+			JOptionPane.showMessageDialog(this, "Es existiert bereits ein Knoten mit diesem Namen",
+					"Fehler", JOptionPane.ERROR_MESSAGE);
+		}else{
+			n.setParent(this);
+			nodes.add(n);
+			nodesMap.put(n.getNode().name, n);
+			g.newNode(n.getNode().name);
+		}		
+	}
+	
 	public NodeComponent getNodeAt(double x, double y){
 		for(NodeComponent n : nodes){
 			if(n.isAt(x, y)) return n;
@@ -68,19 +78,17 @@ public class GraphComponent extends JPanel {
 		return null;
 	}
 	
+	public void findWay(String start, String target){
+		if(nodesMap.containsKey(start) && nodesMap.containsKey(target)){
+			SearchAlgorithm a = new SearchAlgorithm(g);
+			a.search(g.getNode(start), g.getNode(target));
+			for(String s : a.getPath())	nodesMap.get(s).setState(State.WAYPOINT);
+			nodesMap.get(start).setState(State.START);
+			nodesMap.get(target).setState(State.TARGET);
+		}
+	}
+	
 	public void sortNodes(){
-//		int i = 0;
-//		for(NodeComponent n : nodes){
-//			if(counterX + 30 + n.getWidth() > this.getWidth() - 30 || i++ > 5){
-//				counterX = 0;
-//				i = 0;
-//				counterY += 30;	
-//			}
-//			n.setY(counterY);
-//			n.setX(counterX += 30);
-//		}
-//		counterX = 0;
-//		counterY = 30;
 		for(NodeComponent n : nodes){
 			n.getPosition().setX(Math.random() * getWidth());
 			n.getPosition().setY(Math.random() * getHeight());
@@ -91,14 +99,11 @@ public class GraphComponent extends JPanel {
 		for(PhysikNode n1 : nodes){
 			for(PhysikNode n2 : nodes) if(n1 != n2){
 				n1.applyForceFrom(n2);
-//				System.out.println(n1.getNode().name + " -> " + n2.getNode().name);
 			}
 		}
 		for(NodeComponent n : nodes){
-//			System.out.println(n.getNode().name + " " + n.getPosition());
 			n.update();
 		}
-//		repaint();
 	}
 	
 	@Override
