@@ -38,19 +38,26 @@ public class GUI extends JFrame {
 	private GraphComponent g;
 	private int millisBetweenRepaint;
 	private JTextField startField, targetField;
+	private NodeComponent selectedNode;
+	private JLabel nameLabel;
 
 	public GUI(String name){
 		super(name);
 		setSize(400,400);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		g = null;
-		update = false;
+		g = new GraphComponent();
+		getContentPane().add(g);
+		update = true;
 		millisBetweenRepaint = 17;
+		selectedNode = null;
 		
+		nameLabel = new JLabel("");
+		nameLabel.setHorizontalAlignment(JLabel.RIGHT);
+		getContentPane().add(nameLabel, BorderLayout.NORTH);
 		JPanel southPanel = new JPanel();
 		JButton findButton = new JButton("Finde");
 		findButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				findWay(startField.getText(), targetField.getText());
@@ -65,7 +72,7 @@ public class GUI extends JFrame {
 		southPanel.add(targetField);
 		southPanel.add(findButton);
 		this.getContentPane().add(southPanel, BorderLayout.SOUTH);
-		
+
 		JMenuBar menu = new JMenuBar();
 		JMenu file = new JMenu("Datei");
 		JMenu edit = new JMenu("Bearbeiten");
@@ -73,6 +80,7 @@ public class GUI extends JFrame {
 		JMenuItem newFile = new JMenuItem("Neue Datei");
 		JMenuItem loadFile = new JMenuItem("Lade Datei");
 		JMenuItem addNode = new JMenuItem("Knoten hinzufügen");
+		JMenuItem removeNode = new JMenuItem("Knoten entfernen");
 		newFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -91,9 +99,16 @@ public class GUI extends JFrame {
 				addNode();
 			}
 		});
+		removeNode.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				removeNode();
+			}
+		});
 		file.add(newFile);
 		file.add(loadFile);
 		edit.add(addNode);
+		edit.add(removeNode);
 		menu.add(file);
 		menu.add(edit);
 		menu.add(help);
@@ -130,9 +145,11 @@ public class GUI extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				NodeComponent n = null;
-				if(g != null) n = g.getNodeAt(e.getX(), e.getY());
-				if(n != null) n.setDragged(true);
+				if(e.getButton() == MouseEvent.BUTTON1){
+					NodeComponent n = null;
+					if(g != null) n = g.getNodeAt(e.getX(), e.getY());
+					if(n != null) n.setDragged(true);
+				}
 			}
 
 			@Override
@@ -148,8 +165,24 @@ public class GUI extends JFrame {
 			}
 
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				// TODO Auto-generated method stub
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON3){
+					NodeComponent n = null;
+					if(g != null) n = g.getNodeAt(e.getX(), e.getY());
+					if(selectedNode != null){
+						if(e.isControlDown() && n != null){
+							newEdge(selectedNode, n);
+							return;
+						}
+						selectedNode.setSelected(false);
+					}
+					if(n != null){
+						n.setSelected(true);
+						nameLabel.setText(n.getNode().name);
+					}
+					else nameLabel.setText("");
+					selectedNode = n;
+				}
 
 			}
 		});
@@ -169,9 +202,8 @@ public class GUI extends JFrame {
 				repaint();
 			}
 		}
-		//		g.sortNodes();
 	}
-	
+
 	private void findWay(String start, String target){
 		if(g != null) g.findWay(start, target);
 	}
@@ -181,6 +213,14 @@ public class GUI extends JFrame {
 		String name = JOptionPane.showInputDialog(this, "Geben sie den Name des neuen Knoten ein.", "Neuer Knoten");
 		if(name == null) return;
 		g.addNewNode(new PhysikNode(new Node(name), Math.random() * getWidth(), Math.random() * getHeight()));
+	}
+	
+	private void removeNode(){
+		g.removeNode(selectedNode);
+	}
+	
+	private void newEdge(NodeComponent start, NodeComponent target){
+			g.connetct(start, target);
 	}
 
 	private void loadGraph(){
@@ -202,7 +242,7 @@ public class GUI extends JFrame {
 					"Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+
 	private void newFile(){
 		if(g != null) getContentPane().remove(g);
 		g = new GraphComponent();

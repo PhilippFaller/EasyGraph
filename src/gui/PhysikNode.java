@@ -43,7 +43,7 @@ public class PhysikNode extends NodeComponent {
 	}
 
 	public void applyForceFrom(NodeComponent n){
-		if(n.getNode().isConnectedWith(getNode())){
+		if(n.isConnectedTo(this)){
 			applyAttractionFrom(n.getPosition());  
 		}
 		applyRepelFrom(n.getPosition());

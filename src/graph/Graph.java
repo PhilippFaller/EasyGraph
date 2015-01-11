@@ -58,6 +58,16 @@ public class Graph {
 		if(!v.isConnectedWith(w)) v.connectTo(w, cost);
 	}
 	
+	public void removeNode(String name){
+		Node removeNode = graph.get(name);
+		for(Node n : graph.values()){
+			for(int i = 0; i < n.edges.size(); i++){
+				if(n.edges.get(i).target == removeNode) n.edges.remove(i);
+			}
+		}
+		graph.remove(name);
+	}
+	
 	@Override
 	public String toString(){
 		String result = "Adjazenzlisten des Graphen:\n";

@@ -1,6 +1,8 @@
 package graph;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class Node {
@@ -9,7 +11,7 @@ public class Node {
 	
 	public Node(String name) {
 		this.name = name;
-		edges = new LinkedList<Edge>();
+		edges = new ArrayList<Edge>();
 	}
 	
 	public boolean isConnectedWith(Node n) {

@@ -23,11 +23,11 @@ import graph.SearchAlgorithm;
 import gui.NodeComponent.State;
 
 class GraphComponent extends JPanel {
-	
+
 	private Graph g;
 	private List<PhysikNode> nodes;
 	private Map<String, PhysikNode> nodesMap;
-	
+
 	public GraphComponent(Graph g){
 		super();
 		this.g = g;
@@ -43,11 +43,11 @@ class GraphComponent extends JPanel {
 			}
 		}
 	}
-	
+
 	public GraphComponent(){
 		this(new Graph());
 	}
-	
+
 	public void addNode(PhysikNode n){
 		if(nodesMap.containsKey(n.getNode().name)){
 			JOptionPane.showMessageDialog(this, "Es existiert bereits ein Knoten mit diesem Namen",
@@ -58,7 +58,7 @@ class GraphComponent extends JPanel {
 			nodesMap.put(n.getNode().name, n);
 		}
 	}
-	
+
 	public void addNewNode(PhysikNode n){
 		if(nodesMap.containsKey(n.getNode().name)){
 			JOptionPane.showMessageDialog(this, "Es existiert bereits ein Knoten mit diesem Namen",
@@ -71,14 +71,26 @@ class GraphComponent extends JPanel {
 		}		
 	}
 	
+	public void removeNode(NodeComponent n){
+		g.removeNode(n.getNode().name);
+		for(NodeComponent n1 : nodes){
+			for(int i = 0; i < n1.getEdges().size(); i++){
+				if(n1.getEdges().get(i).getEnd() == n) n1.getEdges().remove(i);
+			}
+		}
+		nodes.remove(n);
+		nodesMap.remove(n.getNode().name);
+	}
+
 	public NodeComponent getNodeAt(double x, double y){
 		for(NodeComponent n : nodes){
 			if(n.isAt(x, y)) return n;
 		}
 		return null;
 	}
-	
+
 	public void findWay(String start, String target){
+		for(NodeComponent n : nodes) n.setState(State.NORMAL);
 		if(nodesMap.containsKey(start) && nodesMap.containsKey(target)){
 			SearchAlgorithm a = new SearchAlgorithm(g);
 			a.search(g.getNode(start), g.getNode(target));
@@ -86,15 +98,31 @@ class GraphComponent extends JPanel {
 			nodesMap.get(start).setState(State.START);
 			nodesMap.get(target).setState(State.TARGET);
 		}
+		//TODO ausgabe wenn knoten nich existiert
 	}
-	
+
+	public void connetct(NodeComponent start, NodeComponent target){
+		if(!start.getNode().isConnectedWith(target.getNode())){
+			String input = JOptionPane.showInputDialog(this, "Geben sie die Kosten der neuen Kante ein." );
+			double cost = 0;
+			try{
+				cost = Double.parseDouble(input);
+			}catch(NumberFormatException e){
+				JOptionPane.showMessageDialog(this, "Eingabe war keine Zahl.", "Fehler", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			start.getNode().connectTo(target.getNode(), cost);
+			start.connectTo(target, cost);
+		}
+		else JOptionPane.showMessageDialog(this, "Kante existiert bereits.", "Fehler", JOptionPane.ERROR_MESSAGE);
+	}
 	public void sortNodes(){
 		for(NodeComponent n : nodes){
 			n.getPosition().setX(Math.random() * getWidth());
 			n.getPosition().setY(Math.random() * getHeight());
 		}
 	}
-	
+
 	public void update(){		
 		for(PhysikNode n1 : nodes){
 			for(PhysikNode n2 : nodes) if(n1 != n2){
@@ -105,7 +133,7 @@ class GraphComponent extends JPanel {
 			n.update();
 		}
 	}
-	
+
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);

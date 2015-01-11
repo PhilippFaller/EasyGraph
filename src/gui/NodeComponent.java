@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+
+import graph.Edge;
 import graph.Node;
 
 public class NodeComponent {
@@ -46,7 +48,8 @@ public class NodeComponent {
 
 	public void paintNode(Graphics g){
 		
-		g.setColor(Color.BLACK);
+		if(selected) g.setColor(Color.MAGENTA);
+		else g.setColor(Color.BLACK);
 		g.fillOval((int) pos.getX() - diameter/2, (int) pos.getY() - diameter/2, diameter, diameter);
 		switch(state){
 		case NORMAL: g.setColor(Color.BLUE); break;
@@ -70,6 +73,14 @@ public class NodeComponent {
 
 	public void connectTo(NodeComponent n, double cost){
 		edges.add(new EdgeComponent(this, n, cost));
+	}
+	
+	public boolean isConnectedTo(NodeComponent n){
+		for(EdgeComponent e : edges) {
+			if (e.getEnd() == n)
+				return true;
+		}
+		return false;
 	}
 	
 	public boolean isAt(double x, double y){
@@ -140,5 +151,9 @@ public class NodeComponent {
 
 	public void setState(State state) {
 		this.state = state;
+	}
+
+	public List<EdgeComponent> getEdges() {
+		return edges;
 	}
 }
