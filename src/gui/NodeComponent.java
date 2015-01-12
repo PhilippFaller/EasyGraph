@@ -48,7 +48,7 @@ public class NodeComponent {
 
 	public void paintNode(Graphics g){
 		
-		if(selected) g.setColor(Color.MAGENTA);
+		if(selected) g.setColor(Color.RED);
 		else g.setColor(Color.BLACK);
 		g.fillOval((int) pos.getX() - diameter/2, (int) pos.getY() - diameter/2, diameter, diameter);
 		switch(state){

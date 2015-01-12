@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Suchknoten {
-	Node graphKnoten;
-	Suchknoten parent;
+public class SearchNode {
+	Node graphNode;
+	SearchNode parent;
 
 	/**
 	 * Erzeuge aus einem Knoten des urspruenglichen Graphen einen Suchknoten
@@ -23,13 +23,13 @@ public class Suchknoten {
 	 *            ist, oder null (falls dieser Suchknoten der Startknoten ist)
 	 *
 	 */
-	public Suchknoten(Node kn, Suchknoten p) {
-		graphKnoten = kn;
+	public SearchNode(Node kn, SearchNode p) {
+		graphNode = kn;
 		parent = p;
 	}
 
 	public Node getGraphKnoten() {
-		return graphKnoten;
+		return graphNode;
 	}
 
 }

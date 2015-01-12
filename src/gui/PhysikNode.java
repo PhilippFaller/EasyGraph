@@ -5,13 +5,14 @@ import graph.Node;
 public class PhysikNode extends NodeComponent {
 
 	private GVector velocity, acceleration;
+	private static boolean forceActive = true;;
 
 	public PhysikNode(Node n) {
 		super(n);
 		velocity = new GVector();
 		acceleration = new GVector();
 	}
-	
+
 	public PhysikNode(Node n, double x, double y){
 		super(n, x, y);
 		velocity = new GVector();
@@ -22,23 +23,24 @@ public class PhysikNode extends NodeComponent {
 	public void update(){
 		if(isDragged()){
 			try{
-			getPosition().setX(getParent().getMousePosition().getX());
-			getPosition().setY(getParent().getMousePosition().getY());
+				getPosition().setX(getParent().getMousePosition().getX());
+				getPosition().setY(getParent().getMousePosition().getY());
 			}catch(NullPointerException e){};
 			setAcceleration(new GVector());
 		} else {
-			if(isOutOfBorderX()) turnAroundX();
-			if(isOutOfBorderY()) turnAroundY();
+			if(forceActive){
+				if(isOutOfBorderX()) turnAroundX();
+				if(isOutOfBorderY()) turnAroundY();
 
-			applyRepelFrom(new GVector(this.getX(), 0));
-			applyRepelFrom(new GVector(this.getX(), getParent().getHeight()));
-			applyRepelFrom(new GVector(0, this.getY()));
-			applyRepelFrom(new GVector(getParent().getWidth(), this.getY()));
-			getAcceleration().add(getVelocity().mulV(-0.25));
-			getVelocity().add(getAcceleration());
-			getPosition().add(getVelocity());
+				applyRepelFrom(new GVector(this.getX(), 0));
+				applyRepelFrom(new GVector(this.getX(), getParent().getHeight()));
+				applyRepelFrom(new GVector(0, this.getY()));
+				applyRepelFrom(new GVector(getParent().getWidth(), this.getY()));
+				getAcceleration().add(getVelocity().mulV(-0.25));
+				getVelocity().add(getAcceleration());
+				getPosition().add(getVelocity());
+			}
 			setAcceleration(new GVector());
-
 		}
 	}
 
@@ -94,5 +96,13 @@ public class PhysikNode extends NodeComponent {
 
 	public void setAcceleration(GVector a) {
 		this.acceleration = a;
+	}
+
+	public static boolean isForceActive() {
+		return forceActive;
+	}
+
+	public static void setForceActive(boolean forceActive) {
+		PhysikNode.forceActive = forceActive;
 	}
 }

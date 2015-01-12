@@ -1,4 +1,4 @@
-a	b	1
-b	a	1
-b	c	2
-c	b	2
+b	a	1.0
+b	c	2.0
+c	b	2.0
+a	b	1.0

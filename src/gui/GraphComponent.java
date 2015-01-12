@@ -5,7 +5,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,13 +35,15 @@ class GraphComponent extends JPanel {
 		this.g = g;
 		nodes = new CopyOnWriteArrayList<>();
 		nodesMap = new ConcurrentHashMap<>();
-		for(Node n : g.getAllNodes()){
-			PhysikNode nc = new PhysikNode(n);
+		Collection<Node> c = g.getAllNodes();
+		Iterator<Node> i = c.iterator();
+		while(i.hasNext()){
+			PhysikNode nc = new PhysikNode(i.next());
 			addNode(nc);
 		}
-		for(NodeComponent n : nodes){
-			for(Edge e : n.getNode().edges){
-				n.connectTo(nodesMap.get(e.target.name), e.costs);
+		for(int j = 0; j < nodes.size(); j++){
+			for(Edge e : nodes.get(j).getNode().edges){
+				nodes.get(j).connectTo(nodesMap.get(e.target.name), e.costs);
 			}
 		}
 	}
@@ -61,7 +65,7 @@ class GraphComponent extends JPanel {
 
 	public void addNewNode(PhysikNode n){
 		if(nodesMap.containsKey(n.getNode().name)){
-			JOptionPane.showMessageDialog(this, "Es existiert bereits ein Knoten mit diesem Namen",
+			JOptionPane.showMessageDialog(getParent(), "Es existiert bereits ein Knoten mit diesem Namen",
 					"Fehler", JOptionPane.ERROR_MESSAGE);
 		}else{
 			n.setParent(this);
@@ -73,9 +77,9 @@ class GraphComponent extends JPanel {
 	
 	public void removeNode(NodeComponent n){
 		g.removeNode(n.getNode().name);
-		for(NodeComponent n1 : nodes){
-			for(int i = 0; i < n1.getEdges().size(); i++){
-				if(n1.getEdges().get(i).getEnd() == n) n1.getEdges().remove(i);
+		for(int j = 0; j < nodes.size(); j++){
+			for(int i = 0; i < nodes.get(j).getEdges().size(); i++){
+				if(nodes.get(j).getEdges().get(i).getEnd() == n) nodes.get(j).getEdges().remove(i);
 			}
 		}
 		nodes.remove(n);
@@ -83,8 +87,8 @@ class GraphComponent extends JPanel {
 	}
 
 	public NodeComponent getNodeAt(double x, double y){
-		for(NodeComponent n : nodes){
-			if(n.isAt(x, y)) return n;
+		for(int i = 0; i < nodes.size(); i++){
+			if(nodes.get(i).isAt(x, y)) return nodes.get(i);
 		}
 		return null;
 	}
@@ -111,12 +115,12 @@ class GraphComponent extends JPanel {
 				JOptionPane.showMessageDialog(this, "Eingabe war keine Zahl.", "Fehler", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			start.getNode().connectTo(target.getNode(), cost);
+			g.getNode(start.getNode().name).connectTo(g.getNode(target.getNode().name), cost);
 			start.connectTo(target, cost);
 		}
 		else JOptionPane.showMessageDialog(this, "Kante existiert bereits.", "Fehler", JOptionPane.ERROR_MESSAGE);
 	}
-	public void sortNodes(){
+	public void shuffleNodes(){
 		for(NodeComponent n : nodes){
 			n.getPosition().setX(Math.random() * getWidth());
 			n.getPosition().setY(Math.random() * getHeight());
@@ -146,6 +150,10 @@ class GraphComponent extends JPanel {
 		for(NodeComponent n : nodes){
 			n.paintNode(g);
 		}		
+	}
+
+	public Graph getGraph() {
+		return g;
 	}
 
 }
