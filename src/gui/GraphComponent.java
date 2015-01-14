@@ -1,23 +1,18 @@
 package gui;
 
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
+import graph.BreadthFirstSearch;
 import graph.Edge;
 import graph.Graph;
 import graph.Node;
@@ -33,6 +28,8 @@ class GraphComponent extends JPanel {
 	public GraphComponent(Graph g){
 		super();
 		this.g = g;
+		setLayout(new BorderLayout());
+		setDoubleBuffered(true);
 		nodes = new CopyOnWriteArrayList<>();
 		nodesMap = new ConcurrentHashMap<>();
 		Collection<Node> c = g.getAllNodes();
@@ -96,13 +93,13 @@ class GraphComponent extends JPanel {
 	public void findWay(String start, String target){
 		for(NodeComponent n : nodes) n.setState(State.NORMAL);
 		if(nodesMap.containsKey(start) && nodesMap.containsKey(target)){
-			SearchAlgorithm a = new SearchAlgorithm(g);
+			SearchAlgorithm a = new BreadthFirstSearch(g);
 			a.search(g.getNode(start), g.getNode(target));
 			for(String s : a.getPath())	nodesMap.get(s).setState(State.WAYPOINT);
 			nodesMap.get(start).setState(State.START);
 			nodesMap.get(target).setState(State.TARGET);
 		}
-		//TODO ausgabe wenn knoten nich existiert
+		else JOptionPane.showMessageDialog(this, "Gesuchte Knoten existieren nicht", "Fehler", JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void connetct(NodeComponent start, NodeComponent target){

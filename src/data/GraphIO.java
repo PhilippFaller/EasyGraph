@@ -3,7 +3,6 @@ package data;
 import graph.Edge;
 import graph.Graph;
 import graph.Node;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;

@@ -1,36 +1,22 @@
 package graph;
 
-import graph.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
-
-public class SearchAlgorithm {
+public abstract class SearchAlgorithm {
 	
 	Graph origGraph;
-	private ArrayList<SearchNode> openList = new ArrayList<>();
-	private ArrayList<SearchNode> closedList = new ArrayList<>();
+	private List<SearchNode> openList;;
 	private Node targetNode;
-	private ArrayList<String> path = new ArrayList<>();
+	private List<String> path;
 
 	public SearchAlgorithm(Graph g) {
 		origGraph = g;
+		openList = new ArrayList<>();
+		path = new ArrayList<>();
 	}
 
-	public void search(Node start, Node target) {
-		SearchNode s = new SearchNode(start, null);
-		setTargetNode(target);
-		addToOpenList(s);
-		while (!openList.isEmpty()) {
-			SearchNode skn = removeNextFromOpenList();
-			closedList.add(skn);
-			if (isTargetNode(skn)) {
-				clearPath();
-				extractPathFromSearchNodes(skn);
-				return;
-			}
-			expand(skn);
-		}
-	}
+	public abstract void search(Node start, Node target);
 
 	public void setTargetNode(Node target) {
 		targetNode = target;
@@ -44,7 +30,7 @@ public class SearchAlgorithm {
 		return skn.getGraphKnoten().equals(targetNode);
 	}
 
-	public void expand(SearchNode skn) {
+	protected void expand(SearchNode skn) {
 		for (Edge k : skn.graphNode.edges) {
 			Node target = k.target;
 			SearchNode sknZiel = new SearchNode(target, skn);
@@ -57,14 +43,14 @@ public class SearchAlgorithm {
 		path.clear();
 	}
 
-	public void extractPathFromSearchNodes(SearchNode skn) {
+	protected void extractPathFromSearchNodes(SearchNode skn) {
 		if (skn.parent != null) {
 			extractPathFromSearchNodes(skn.parent);
 		}
 		path.add(skn.graphNode.name);
 	}
 
-	public SearchNode removeNextFromOpenList() {
+	protected SearchNode removeNextFromOpenList() {
 		SearchNode skn = openList.remove(0);
 		return skn;
 	}
@@ -73,7 +59,7 @@ public class SearchAlgorithm {
 		return path;
 	}
 
-	public void addToOpenList(SearchNode skn) {
+	protected void addToOpenList(SearchNode skn) {
 		openList.add(skn);
 	}
 
@@ -81,7 +67,7 @@ public class SearchAlgorithm {
 		return targetNode;
 	}
 
-	public ArrayList<SearchNode> getOpenList() {
+	public List<SearchNode> getOpenList() {
 		return openList;
 	}
 }
